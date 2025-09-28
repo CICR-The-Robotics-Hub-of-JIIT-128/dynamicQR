@@ -18,7 +18,13 @@
   "homepage": "https://github.com/CICR-The-Robotics-Hub-of-JIIT-128/dynamicQR#readme",
   "dependencies": {
     "body-parser": "^2.2.0",
+    "dotenv": "^17.2.2",
+    "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "mongoose": "^8.18.2",
+    "morgan": "^1.10.1",
+    "nodemon": "^3.1.10",
     "sqlite3": "^5.1.7"
   }
 }

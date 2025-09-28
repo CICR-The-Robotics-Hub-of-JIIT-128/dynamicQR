@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("./partials/head.ejs") %>
+  <body>
+    <div id="auth-section" class="auth-container">
+      <div class="auth-card">
+        <div id="login-form">
+          <div class="auth-header">
+            <i class="fas fa-shield-alt auth-icon"></i>
+            <h2>Admin Login</h2>
+            <p>Access your CICR QR-Redirect Dashboard</p>
+          </div>
+          <!-- onsubmit="handleLogin(event)" -->
+          <form action="/login" method="POST">
+            <div class="form-group">
+              <label for="login-username">
+                <i class="fas fa-user"></i> Username
+              </label>
+              <input
+                type="text"
+                id="login-username"
+                class="form-input"
+                name="username"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="login-password">
+                <i class="fas fa-lock"></i> Password
+              </label>
+              <input
+                type="password"
+                id="login-password"
+                class="form-input"
+                name="password"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+            <p id="login-message" style="color: red; margin-top: 10px"></p>
+            <p class="switch-text">
+              <span class="switch-auth" onclick="showSignup()"
+                >Don't have an account? Sign Up</span
+              >
+            </p>
+          </form>
+        </div>
+        <div id="signup-form" style="display: none">
+          <div class="auth-header">
+            <i class="fas fa-user-plus auth-icon"></i>
+            <h2>Admin Signup</h2>
+            <p>Create your admin account(New Registrations are suspended)</p>
+          </div>
+          <form action="/login" method="POST" onsubmit="handleSignup(event)">
+            <div class="form-group">
+              <label for="signup-username">
+                <i class="fas fa-user"></i> Username
+              </label>
+              <input
+                type="text"
+                id="signup-username"
+                class="form-input"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="signup-password">
+                <i class="fas fa-lock"></i> Password
+              </label>
+              <input
+                type="password"
+                id="signup-password"
+                class="form-input"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="signup-confirm">
+                <i class="fas fa-check-circle"></i> Confirm Password
+              </label>
+              <input
+                type="password"
+                id="signup-confirm"
+                class="form-input"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary" disabled>
+              <i class="fas fa-user-plus"></i> Sign Up
+            </button>
+            <p class="switch-text">
+              <span class="switch-auth" onclick="showLogin()"
+                >Already have an account? Login</span
+              >
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      function showSignup() {
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("signup-form").style.display = "block";
+      }
+      function showLogin() {
+        document.getElementById("signup-form").style.display = "none";
+        document.getElementById("login-form").style.display = "block";
+      }
+
+      async function handleLogin(event) {
+        event.preventDefault(); // stop form from reloading the page
+
+        const username = document.getElementById("login-username").value;
+        const password = document.getElementById("login-password").value;
+
+        try {
+          const response = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+
+          const message = await response.text();
+          const msgEl = document.getElementById("login-message");
+          msgEl.innerText = message;
+
+          if (response.ok) {
+            msgEl.style.color = "green";
+            // optionally redirect after login success
+            window.location.href = "/dashboard";
+          } else {
+            msgEl.style.color = "red";
+          }
+        } catch (err) {
+          console.error(err);
+          document.getElementById("login-message").innerText = "Server error!";
+        }
+      }
+    </script>
+  </body>
+</html>
