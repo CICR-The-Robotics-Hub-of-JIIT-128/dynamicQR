@@ -524,3 +524,62 @@ body {
 .btn.btn-secondary:hover {
   background-color: #666;
 }
+
+
+
+/* Style for links inside the history table */
+.history-table td a {
+  font-size: 16px; /* Adjust this value as needed */
+  font-weight: 500;
+  color: #90EE90;   /* A light green for better contrast */
+  text-decoration: none; /* Optional: removes the underline */
+}
+
+/* Change color when the user hovers over the link */
+.history-table td a:hover {
+  color: #FFFFFF;   /* Bright white on hover */
+  text-decoration: underline;
+}
+
+
+
+
+
+
+
+/* Container to perfectly align the action buttons */
+.action-buttons-container {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Creates a nice space between buttons */
+}
+
+/* A general class for all action buttons */
+.btn-action {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Specific styling for the green 'Set Active' button */
+.btn-set-active {
+  background-color: #28a745; /* Success Green */
+}
+
+.btn-set-active:hover {
+  background-color: #218838; /* Darker Green on hover */
+}
+
+/* Specific styling for the red 'Remove' button */
+.btn-remove {
+  background-color: #dc3545; /* Danger Red */
+}
+
+.btn-remove:hover {
+  background-color: #c82333; /* Darker Red on hover */
+}

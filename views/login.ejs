@@ -10,7 +10,6 @@
             <h2>Admin Login</h2>
             <p>Access your CICR QR-Redirect Dashboard</p>
           </div>
-          <!-- onsubmit="handleLogin(event)" -->
           <form action="/login" method="POST">
             <div class="form-group">
               <label for="login-username">
@@ -40,77 +39,13 @@
               <i class="fas fa-sign-in-alt"></i> Login
             </button>
             <p id="login-message" style="color: red; margin-top: 10px"></p>
-            <p class="switch-text">
-              <span class="switch-auth" onclick="showSignup()"
-                >Don't have an account? Sign Up</span
-              >
-            </p>
-          </form>
-        </div>
-        <div id="signup-form" style="display: none">
-          <div class="auth-header">
-            <i class="fas fa-user-plus auth-icon"></i>
-            <h2>Admin Signup</h2>
-            <p>Create your admin account(New Registrations are suspended)</p>
-          </div>
-          <form action="/login" method="POST" onsubmit="handleSignup(event)">
-            <div class="form-group">
-              <label for="signup-username">
-                <i class="fas fa-user"></i> Username
-              </label>
-              <input
-                type="text"
-                id="signup-username"
-                class="form-input"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="signup-password">
-                <i class="fas fa-lock"></i> Password
-              </label>
-              <input
-                type="password"
-                id="signup-password"
-                class="form-input"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="signup-confirm">
-                <i class="fas fa-check-circle"></i> Confirm Password
-              </label>
-              <input
-                type="password"
-                id="signup-confirm"
-                class="form-input"
-                required
-              />
-            </div>
-            <button type="submit" class="btn btn-primary" disabled>
-              <i class="fas fa-user-plus"></i> Sign Up
-            </button>
-            <p class="switch-text">
-              <span class="switch-auth" onclick="showLogin()"
-                >Already have an account? Login</span
-              >
-            </p>
           </form>
         </div>
       </div>
     </div>
     <script>
-      function showSignup() {
-        document.getElementById("login-form").style.display = "none";
-        document.getElementById("signup-form").style.display = "block";
-      }
-      function showLogin() {
-        document.getElementById("signup-form").style.display = "none";
-        document.getElementById("login-form").style.display = "block";
-      }
-
       async function handleLogin(event) {
-        event.preventDefault(); // stop form from reloading the page
+        event.preventDefault(); 
 
         const username = document.getElementById("login-username").value;
         const password = document.getElementById("login-password").value;
@@ -128,7 +63,6 @@
 
           if (response.ok) {
             msgEl.style.color = "green";
-            // optionally redirect after login success
             window.location.href = "/dashboard";
           } else {
             msgEl.style.color = "red";

@@ -11,6 +11,11 @@ const redirectLinkSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    visitCount: {
+      type: Number,
+      required: true,
+      default: 0, 
+    },
     createdAt: {
       type: Date,
       default: Date.now,

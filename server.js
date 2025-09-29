@@ -6,11 +6,11 @@ const links = require("./links.json");
 const Admins = require("./models/admins");
 const session = require("express-session");
 const RedirectLink = require("./models/redirectLink");
+const methodOverride = require('method-override');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3002;
 
-let path = "";
 const dbURI = process.env.DB_URI;
   mongoose
   .connect(dbURI)
@@ -28,6 +28,7 @@ app.set("view-engine", "ejs");
 app.use(morgan("dev"));
 app.use(express.urlencoded());
 app.use(express.static("public"));
+app.use(methodOverride('_method')); 
 app.use(express.json());
 app.use(
   session({
@@ -45,11 +46,7 @@ app.get("/", (req, res) => {
   console.log("root page requested");
   res.send("<h1>This Zone is restricted</h1>");
 });
-app.get("/cicrRoot", (req, res) => {
-  console.log(`QR scanned!, Time: ${new Date().toISOString()}`);
-  getPath();
-  res.redirect(path);
-});
+
 app.get("/admin", (req, res) => {
   console.log(`Admin Login Requested`);
   res.render("login.ejs", { title: "QR Redirect" });
@@ -87,12 +84,28 @@ const isAuth = (req, res, next) => {
 
 app.get("/dashboard", isAuth, async (req, res) => {
   try {
+    const today = new Date();
+    const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+    startOfWeek.setHours(0, 0, 0, 0); 
+
+    const newLinksThisWeek = await RedirectLink.countDocuments({
+      createdAt: { $gte: startOfWeek },
+    });
+
     const allLinks = await RedirectLink.find({}).sort({ createdAt: -1 });
     const activeLink = allLinks.find((link) => link.isActive);
+    const totalLinks = allLinks.length;
+    const totalVisits = allLinks.reduce((sum, link) => sum + link.visitCount, 0);
+    const activeVisits = activeLink ? activeLink.visitCount : 0;
+
     res.render("dashboard.ejs", {
       title: "CICR | QR Dashboard",
       links: allLinks,
       activeLink: activeLink,
+      totalLinks: totalLinks,
+      totalVisits: totalVisits,
+      activeVisits: activeVisits,
+      newLinksThisWeek: newLinksThisWeek,
     });
   } catch (err) {
     console.log("Error fetching links:", err);
@@ -144,6 +157,8 @@ app.get("/go", async (req, res) => {
 
     if (activeLink) {
       console.log(`Redirecting to active link: ${activeLink.url}`);
+      activeLink.visitCount++;
+      await activeLink.save();
       res.redirect(activeLink.url);
     } else {
       res
@@ -154,4 +169,32 @@ app.get("/go", async (req, res) => {
     console.error("Error finding active link:", err);
     res.status(500).send("<h1>Server error. Please try again later.</h1>");
   }
+});
+
+app.delete('/delete-link/:id', isAuth, async (req, res) => {
+  try {
+    const linkId = req.params.id;
+    const linkToDelete = await RedirectLink.findById(linkId);
+
+    if (!linkToDelete) {
+      return res.status(404).send('Link not found.');
+    }
+
+    if (linkToDelete.isActive) {
+      return res.status(400).send('Error: Cannot delete the currently active link.');
+    }
+
+    await RedirectLink.findByIdAndDelete(linkId);
+    console.log(`Link deleted: ${linkId}`);
+    res.redirect('/dashboard');
+
+  } catch (error) {
+    console.error('Failed to delete link:', error);
+    res.status(500).send('Server error while trying to delete the link.');
+  }
+});
+
+//edit password route
+app.get("/passwordChange", isAuth, (req, res)=>{
+  res.render("passwordchange.ejs");
 });
