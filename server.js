@@ -9,7 +9,7 @@ const RedirectLink = require("./models/redirectLink");
 const methodOverride = require('method-override');
 
 const app = express();
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 
 const dbURI = process.env.DB_URI;
   mongoose
